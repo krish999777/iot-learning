@@ -1,6 +1,5 @@
 #include <WiFi.h>
 #include <WebServer.h>
-#include <string>
 
 WebServer server(80);
 int state=LOW;
@@ -11,8 +10,12 @@ void handleRoot(){
   server.send(200, "text/plain", "Hello from ESP32");
 }
 void handleLed(){
-  state=state?LOW:HIGH;
-  server.send(200,"text/plain",state==1?"On":"Off");
+  if(server.hasArg("state")==1){
+    state=server.arg("state")=="on"?HIGH:LOW;
+  }else{
+    state=state?LOW:HIGH;
+  }
+  server.send(200,"text/plain",state?"ON":"OFF");
 }
 
 void setup() {
